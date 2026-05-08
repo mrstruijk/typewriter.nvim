@@ -11,11 +11,12 @@ The `position` is a number between `0` and `1`:
 
 If `immediate` is false, it waits until the first keystroke to recenter cursor position.
 
+When using Lazy:
 ```lua
 return {
-  url="mrstruijk/typewriter.nvim",
+  "mrstruijk/typewriter.nvim",
 
-  cmd = { "TypeWriter" },
+  cmd = { "TypeWriter" }, -- for lazy loading 
 
   opts = {
     position = 0.06,
