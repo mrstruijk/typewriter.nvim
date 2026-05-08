@@ -10,6 +10,7 @@ M.augroup = vim.api.nvim_create_augroup("TypewriterScroll", { clear = true })
 M.opts = {
 	position = 0.05,
 	immediate = true, -- if false then it will wait until the first keystroke
+	notify = false, -- show debug notifications
 }
 
 -- scroll to a particular position on screen
@@ -41,7 +42,10 @@ function M.enable()
 	end
 
 	M.enabled = true
-	vim.notify("Typewriter mode ON")
+
+	if M.opts.notify then
+		vim.notify("Typewriter mode " .. tostring(M.enabled))
+	end
 end
 
 function M.disable()
@@ -53,7 +57,10 @@ function M.disable()
 	})
 
 	M.enabled = false
-	vim.notify("Typewriter mode OFF")
+
+	if M.opts.notify then
+		vim.notify("Typewriter mode " .. tostring(M.enabled))
+	end
 end
 
 function M.toggle()

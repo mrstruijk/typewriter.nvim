@@ -19,6 +19,7 @@ return {
   opts = {
     position = 0.06,
     immediate = true,
+    notify = false, -- debug notifications
   },
 
   keys = {
