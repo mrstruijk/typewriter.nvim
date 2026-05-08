@@ -30,6 +30,7 @@ function M.enable()
 	if M.enabled then
 		return
 	end
+
 	vim.api.nvim_create_autocmd("CursorMoved", {
 		group = M.augroup,
 		callback = function()
@@ -43,24 +44,31 @@ function M.enable()
 
 	M.enabled = true
 
-	if M.opts.notify then
-		vim.notify("Typewriter mode " .. tostring(M.enabled))
-	end
+	M.notifications()
 end
 
 function M.disable()
-	if M.disabled then
+	if not M.enabled then
 		return
 	end
+
 	vim.api.nvim_clear_autocmds({
 		group = M.augroup,
 	})
 
 	M.enabled = false
 
-	if M.opts.notify then
-		vim.notify("Typewriter mode " .. tostring(M.enabled))
+	M.notifications()
+end
+
+function M.notifications()
+	if M.opts.notify == false then
+		return
 	end
+
+	vim.notify(
+		string.format("Typewriter mode %s with immediate-mode %s", tostring(M.enabled), tostring(M.opts.immediate))
+	)
 end
 
 function M.toggle()
