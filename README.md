@@ -2,7 +2,8 @@
 
 ```lua
 return {
-  "git@github.com:mrstruijk/typewriter.nvim.git",
+  url="git@github.com:mrstruijk/typewriter.nvim.git",
+  branch="dev",
 
   opts = {
     position = 0.06,
