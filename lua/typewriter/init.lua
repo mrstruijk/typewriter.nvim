@@ -1,4 +1,6 @@
 -- lua/typewriter/init.lua
+-- Keeps the cursor at set vertical location in buffer.
+-- Toggle via `TypeWriter` command
 
 local M = {}
 
@@ -6,9 +8,11 @@ M.enabled = false
 M.augroup = vim.api.nvim_create_augroup("TypewriterScroll", { clear = true })
 
 M.opts = {
-	position = 0.25,
+	position = 0.05,
+	immediate = true, -- if false then it will wait until the first keystroke
 }
 
+-- scroll to a particular position on screen
 local function scroll(position)
 	local win_height = vim.fn.winheight(0)
 	local target = math.floor(win_height * position)
@@ -29,8 +33,12 @@ function M.enable()
 		end,
 	})
 
-	scroll(M.opts.position)
+	if M.opts.immediate then
+		scroll(M.opts.position)
+	end
+
 	M.enabled = true
+	vim.notify("Typewriter mode ON")
 end
 
 function M.disable()
@@ -39,15 +47,14 @@ function M.disable()
 	})
 
 	M.enabled = false
+	vim.notify("Typewriter mode OFF")
 end
 
 function M.toggle()
 	if M.enabled then
 		M.disable()
-		vim.notify("Typewriter OFF")
 	else
 		M.enable()
-		vim.notify("Typewriter ON")
 	end
 end
 
