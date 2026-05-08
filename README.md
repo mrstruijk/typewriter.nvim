@@ -14,6 +14,8 @@ return {
   url="git@github.com:mrstruijk/typewriter.nvim.git",
   branch="dev",
 
+  cmd = { "TypeWriter" },
+
   opts = {
     position = 0.06,
     immediate = true,

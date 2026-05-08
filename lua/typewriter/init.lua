@@ -26,6 +26,9 @@ local function scroll(position)
 end
 
 function M.enable()
+	if M.enabled then
+		return
+	end
 	vim.api.nvim_create_autocmd("CursorMoved", {
 		group = M.augroup,
 		callback = function()
@@ -42,6 +45,9 @@ function M.enable()
 end
 
 function M.disable()
+	if M.disabled then
+		return
+	end
 	vim.api.nvim_clear_autocmds({
 		group = M.augroup,
 	})
