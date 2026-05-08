@@ -10,7 +10,7 @@ M.augroup = vim.api.nvim_create_augroup("TypewriterScroll", { clear = true })
 M.opts = {
 	position = 0.05,
 	immediate = true, -- if false then it will wait until the first keystroke
-	notify = false, -- show debug notifications
+	debug = false, -- show debug notifications
 }
 
 -- scroll to a particular position on screen
@@ -62,7 +62,7 @@ function M.disable()
 end
 
 function M.notifications()
-	if M.opts.notify == false then
+	if M.opts.debug == false then
 		return
 	end
 
