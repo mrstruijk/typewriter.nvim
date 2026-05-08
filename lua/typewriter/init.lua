@@ -29,6 +29,7 @@ function M.enable()
 		end,
 	})
 
+	scroll(M.opts.position)
 	M.enabled = true
 end
 
