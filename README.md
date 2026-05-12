@@ -20,6 +20,7 @@ return {
     position = 0.06,
     immediate = true,
     notify = false, -- debug notifications
+    modes = {"n", "i"}, -- fire in [n]ormal and/or [i]nsert mode
   },
 
   keys = {

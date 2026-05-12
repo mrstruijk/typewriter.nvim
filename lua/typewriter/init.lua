@@ -11,6 +11,7 @@ M.opts = {
 	position = 0.05,
 	immediate = true, -- if false then it will wait until the first keystroke
 	debug = false, -- show debug notifications
+	modes = { "n", "i" },
 }
 
 -- scroll to a particular position on screen
@@ -26,15 +27,24 @@ local function scroll(position)
 	})
 end
 
+-- only move on vertical cursor movement
+-- slight debounce to mitigate virtual column issue (where row above/below has fewer columns: gives weird flicker)
 function M.enable()
 	if M.enabled then
 		return
 	end
-
 	local last_line = nil
 	local timer = nil
 
-	vim.api.nvim_create_autocmd("CursorMoved", {
+	local events = {}
+	if vim.tbl_contains(M.opts.modes, "n") then
+		table.insert(events, "CursorMoved")
+	end
+	if vim.tbl_contains(M.opts.modes, "i") then
+		table.insert(events, "CursorMovedI")
+	end
+
+	vim.api.nvim_create_autocmd(events, {
 		group = M.augroup,
 		callback = function()
 			local current_line = vim.api.nvim_win_get_cursor(0)[1]
@@ -42,14 +52,22 @@ function M.enable()
 				last_line = current_line
 				if timer then
 					timer:stop()
+					timer:close()
 				end
-				timer = vim.defer_fn(function()
-					scroll(M.opts.position)
-				end, 20) -- ms
+				timer = vim.uv.new_timer()
+				timer:start(
+					20,
+					0,
+					vim.schedule_wrap(function()
+						timer:stop()
+						timer:close()
+						timer = nil
+						scroll(M.opts.position)
+					end)
+				)
 			end
 		end,
 	})
-
 	if M.opts.immediate then
 		scroll(M.opts.position)
 	end
