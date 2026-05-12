@@ -31,19 +31,24 @@ function M.enable()
 		return
 	end
 
+	local last_line = nil
+
 	vim.api.nvim_create_autocmd("CursorMoved", {
 		group = M.augroup,
 		callback = function()
-			scroll(M.opts.position)
+			-- only fire when cursor moved lines (vertically)
+			local current_line = vim.api.nvim_win_get_cursor(0)[1]
+			if current_line ~= last_line then
+				last_line = current_line
+				scroll(M.opts.position)
+			end
 		end,
 	})
 
 	if M.opts.immediate then
 		scroll(M.opts.position)
 	end
-
 	M.enabled = true
-
 	M.notifications()
 end
 
