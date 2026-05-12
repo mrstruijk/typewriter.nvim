@@ -60,9 +60,11 @@ function M.enable()
 					M.opts.debounce,
 					0,
 					vim.schedule_wrap(function()
-						timer:stop()
-						timer:close()
-						timer = nil
+						if timer then
+							timer:stop()
+							timer:close()
+							timer = nil
+						end
 						scroll(M.opts.position)
 					end)
 				)
