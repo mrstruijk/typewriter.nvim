@@ -42,6 +42,8 @@ function M.enable()
 		duration = 1
 	end
 
+	local throttled = false
+
 	local events = {}
 	if vim.tbl_contains(M.opts.modes, "n") then
 		table.insert(events, "CursorMoved")
@@ -52,23 +54,27 @@ function M.enable()
 
 	vim.api.nvim_create_autocmd(events, {
 		group = M.augroup,
+
 		callback = function()
 			local current_line = vim.api.nvim_win_get_cursor(0)[1]
 			if current_line ~= last_line then
 				last_line = current_line
-				if timer then
-					timer:stop()
-					timer:close()
+				if throttled then
+					return
 				end
+				scroll(M.opts.position)
+				throttled = true
 				timer = vim.uv.new_timer()
 				timer:start(
 					duration,
 					0,
 					vim.schedule_wrap(function()
-						timer:stop()
-						timer:close()
-						timer = nil
-						scroll(M.opts.position)
+						if timer then
+							timer:stop()
+							timer:close()
+							timer = nil
+						end
+						throttled = false
 					end)
 				)
 			end
