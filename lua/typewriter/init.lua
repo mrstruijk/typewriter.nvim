@@ -37,6 +37,11 @@ function M.enable()
 	local last_line = nil
 	local timer = nil
 
+	local duration = M.opts.debounce
+	if duration <= 0 then
+		duration = 1
+	end
+
 	local events = {}
 	if vim.tbl_contains(M.opts.modes, "n") then
 		table.insert(events, "CursorMoved")
@@ -57,14 +62,12 @@ function M.enable()
 				end
 				timer = vim.uv.new_timer()
 				timer:start(
-					M.opts.debounce,
+					duration,
 					0,
 					vim.schedule_wrap(function()
-						if timer then
-							timer:stop()
-							timer:close()
-							timer = nil
-						end
+						timer:stop()
+						timer:close()
+						timer = nil
 						scroll(M.opts.position)
 					end)
 				)
