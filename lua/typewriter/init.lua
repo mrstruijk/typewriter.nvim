@@ -26,25 +26,38 @@ local function scroll(position)
 	})
 end
 
+-- only move on vertical cursor movement
+-- slight debounce to mitigate virtual column issue (where row above/below has fewer columns: gives weird flicker)
 function M.enable()
 	if M.enabled then
 		return
 	end
-
 	local last_line = nil
-
+	local timer = nil
 	vim.api.nvim_create_autocmd("CursorMoved", {
 		group = M.augroup,
 		callback = function()
-			-- only fire when cursor moved lines (vertically)
 			local current_line = vim.api.nvim_win_get_cursor(0)[1]
 			if current_line ~= last_line then
 				last_line = current_line
-				scroll(M.opts.position)
+				if timer then
+					timer:stop()
+					timer:close()
+				end
+				timer = vim.uv.new_timer()
+				timer:start(
+					20,
+					0,
+					vim.schedule_wrap(function()
+						timer:stop()
+						timer:close()
+						timer = nil
+						scroll(M.opts.position)
+					end)
+				)
 			end
 		end,
 	})
-
 	if M.opts.immediate then
 		scroll(M.opts.position)
 	end
