@@ -12,6 +12,7 @@ M.opts = {
 	immediate = true, -- if false then it will wait until the first keystroke
 	debug = false, -- show debug notifications
 	modes = { "n", "i" },
+	debounce = 20, -- in milliseconds
 }
 
 -- scroll to a particular position on screen
@@ -56,7 +57,7 @@ function M.enable()
 				end
 				timer = vim.uv.new_timer()
 				timer:start(
-					20,
+					M.opts.debounce,
 					0,
 					vim.schedule_wrap(function()
 						timer:stop()

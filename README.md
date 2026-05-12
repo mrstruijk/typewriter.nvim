@@ -21,6 +21,7 @@ return {
     immediate = true,
     notify = false, -- debug notifications
     modes = {"n", "i"}, -- fire in [n]ormal and/or [i]nsert mode
+    debounce = 20, -- in ms
   },
 
   keys = {
